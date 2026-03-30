@@ -1,0 +1,7 @@
+clean_receipts.csv
+duplicate_orders_summary.csv
+duplicate_orders_evidence.csv
+full_clean_receipts_evidence.csv
+__pycache__/
+*.pyc
+.DS_Store
