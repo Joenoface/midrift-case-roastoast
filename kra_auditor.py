@@ -4,12 +4,104 @@ import plotly.express as px
 import datetime
 import os
 
+# ====================== NANGANET PROFESSIONAL THEME ======================
 st.set_page_config(page_title="KRA Roastoast Auditor", layout="wide", page_icon="🧾")
+
+st.markdown("""
+<style>
+    /* Clean corporate background */
+    .stApp {
+        background-color: #f8f9fa;
+    }
+
+    /* Main title - NangaNet style */
+    h1 {
+        color: #003087 !important;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    /* Subheading */
+    .stMarkdown h2, .stMarkdown h3 {
+        color: #003087 !important;
+    }
+
+    /* Metric cards - polished tiles */
+    .stMetric {
+        background-color: white !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 16px 12px;
+    }
+
+    /* Teal accent for important numbers */
+    .stMetric label {
+        color: #00b8a9 !important;
+        font-weight: 600;
+    }
+
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background-color: #f1f3f5;
+        border-right: 1px solid #d0d4d8;
+    }
+
+    /* Tabs - clean and professional */
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: #003087;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #00b8a9 !important;
+        color: white !important;
+        border-radius: 6px;
+    }
+
+    /* Dataframe styling - polished tile */
+    .dataframe {
+        background-color: white !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Buttons - teal NangaNet accent */
+    .stButton > button {
+        background-color: #00b8a9;
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 184, 169, 0.3);
+    }
+    .stButton > button:hover {
+        background-color: #009e91;
+        box-shadow: 0 6px 14px rgba(0, 184, 169, 0.4);
+    }
+
+    /* Divider */
+    hr {
+        border-color: #e0e0e0;
+    }
+
+    /* Caption */
+    .stCaption {
+        color: #6c757d;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ====================== HEADER ======================
 st.title("🧾 KRA Fiscal Receipt Auditor — Roastoast")
 st.markdown("**Transparent • Visually informative • 100% evidence-ready**  \n"
             "Only real receipts • Every reprint highlighted • Full audit trail")
 
-# ====================== DATA LOADING (works locally + cloud) ======================
+# ====================== DATA LOADING ======================
 @st.cache_data
 def load_data(uploaded_file=None):
     if uploaded_file is not None:
@@ -22,30 +114,24 @@ def load_data(uploaded_file=None):
         st.error("No data file found. Please upload clean_receipts.csv")
         st.stop()
     
-    # Parse dates
     df['created_dt'] = pd.to_datetime(df['created'], format='%d/%m/%Y %I:%M:%S %p', errors='coerce')
     df['settled_dt'] = pd.to_datetime(df['settled'], format='%d/%m/%Y %I:%M:%S %p', errors='coerce')
     
-    # Strict cleaning
     original = len(df)
     df = df.dropna(subset=['created_dt', 'order_number', 'receipt_id']).copy()
     df['date'] = df['created_dt'].dt.date
     
-    # Clean strings
     df['receipt_id'] = df['receipt_id'].astype(str)
     df['server'] = df['server'].fillna('Unknown').astype(str)
     df['table'] = df['table'].fillna('Unknown').astype(str)
     df['items'] = df['items'].fillna('').astype(str)
     
-    # Bulletproof date filter
     df = df[df['date'].apply(lambda x: isinstance(x, datetime.date))].copy()
     
     st.sidebar.success(f"✅ Using {len(df):,} clean real receipts "
                        f"(dropped {original - len(df):,} invalid rows)")
-    
     return df
 
-# Cloud: show uploader | Local: auto-load
 if os.path.exists('clean_receipts.csv'):
     df = load_data()
 else:
@@ -141,4 +227,4 @@ with tab4:
                        filtered.to_csv(index=False), 
                        "full_clean_receipts_evidence.csv", mime="text/csv")
 
-st.caption("Midrift KRA Case • Built for Roastoast • Data never stored on cloud")
+st.caption("Midrift KRA Case • Built for Roastoast • Powered by NangaNet Systems")
